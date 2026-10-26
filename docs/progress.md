@@ -7,7 +7,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - [x] Phase 0: Scaffold & Environment
 - [x] Phase 1: Auth, GitHub App & Webhook Intake
 - [x] Phase 2: Diff Fetch & Pre-filtering
-- [ ] Phase 3: Static Analysis
+- [x] Phase 3: Static Analysis
 - [ ] Phase 4: RAG: History Ingestion & Retrieval
 - [ ] Phase 5: Agents & Orchestration
 - [ ] Phase 6: Posting Reviews to GitHub
@@ -43,3 +43,10 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Implemented PR skip rules (draft PRs, bot authors, closed PRs).
 - Implemented risk-prioritized file budgeting (`apply_size_budget`) giving precedence to security-sensitive modules and new files, recording partial state when capped.
 - All 24 tests in test suite passing.
+
+## Phase 3 Notes
+- Implemented Pydantic models for `Finding`, `VerifierResult`, `PRContext`, and `MistakeCategory` taxonomy.
+- Implemented taxonomy mapping for Bandit (B608 SQL injection, B105/B106 hardcoded secret, B307 unsafe eval, B110 bare except) and Pylint (W0102 mutable default, W0702 bare except, E0001 syntax error).
+- Implemented sandboxed static analysis runner with ast pre-parsing for instant syntax error isolation, timeouts (15s), and output capping.
+- Implemented normalizer pipeline that enforces strict changed-lines filtering against PR diff positions and de-duplicates overlapping findings across tools by highest severity.
+- All 31 tests in test suite passing.
