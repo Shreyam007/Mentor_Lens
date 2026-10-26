@@ -8,7 +8,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - [x] Phase 1: Auth, GitHub App & Webhook Intake
 - [x] Phase 2: Diff Fetch & Pre-filtering
 - [x] Phase 3: Static Analysis
-- [ ] Phase 4: RAG: History Ingestion & Retrieval
+- [x] Phase 4: RAG: History Ingestion & Retrieval
 - [ ] Phase 5: Agents & Orchestration
 - [ ] Phase 6: Posting Reviews to GitHub
 - [ ] Phase 7: Backend APIs for the Dashboard
@@ -50,3 +50,11 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Implemented sandboxed static analysis runner with ast pre-parsing for instant syntax error isolation, timeouts (15s), and output capping.
 - Implemented normalizer pipeline that enforces strict changed-lines filtering against PR diff positions and de-duplicates overlapping findings across tools by highest severity.
 - All 31 tests in test suite passing.
+
+## Phase 4 Notes
+- Implemented secret redaction on code diffs, logs, and vector storage (AWS, GitHub, Anthropic, OpenAI tokens, passwords).
+- Implemented commit message heuristics identifying bug-fix commits and mapping them into the mistake taxonomy.
+- Implemented `TeamMemoryStore` with ChromaDB integration, versioned collections (`mentorlens_commits_v1`), idempotent upserts by `(repo_id, sha, file, function)`, and stale commit marking.
+- Implemented repository history ingestion pipeline with S03 multi-stage progress tracking (`fetching_commits` → `extracting_bugfixes` → `chunking_functions` → `embedding` → `ready`).
+- Implemented retriever with similarity thresholding, secret sanitization, and cold-start fallback ("no_history").
+- All 36 tests in test suite passing.
