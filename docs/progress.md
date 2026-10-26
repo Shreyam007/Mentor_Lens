@@ -10,7 +10,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - [x] Phase 3: Static Analysis
 - [x] Phase 4: RAG: History Ingestion & Retrieval
 - [x] Phase 5: Agents & Orchestration
-- [ ] Phase 6: Posting Reviews to GitHub
+- [x] Phase 6: Posting Reviews to GitHub
 - [ ] Phase 7: Backend APIs for the Dashboard
 - [ ] Phase 8: Frontend (screen by screen S01..S16)
 - [ ] Phase 9: Edge-Case Hardening Matrix
@@ -67,3 +67,11 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Enforced citation stripping on hallucinated/unverified SHAs while retaining pedagogical guidance.
 - Handled out-of-diff line errors by routing to PR summary level.
 - All 42 tests in test suite passing.
+
+## Phase 6 Notes
+- Implemented GitHub review poster (`backend/app/github/poster.py`) with hidden markers `<!-- mentorlens:finding:... -->` for zero-duplicate idempotent updates.
+- Implemented batch inline review comment posting + comprehensive PR summary comment table.
+- Implemented 422 line-not-in-diff fallback cleanly redirecting to PR issue comments.
+- Implemented optional PR checks gate via GitHub Checks API (`off`, `advisory`, `blocking-on-critical`).
+- Verified via mocked GitHub API test suite using `respx` (initial post, update-on-synchronize, 422 fallback).
+- All 45 tests in test suite passing.
