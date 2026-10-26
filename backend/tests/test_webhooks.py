@@ -105,7 +105,7 @@ async def test_webhook_valid_delivery_and_idempotency():
 @pytest.mark.asyncio
 async def test_webhook_installation_revoked():
     await init_db()
-    inst_id = 9999
+    inst_id = int(uuid.uuid4().int % 100000000)
     # First, simulate creating an installation and queued run
     async with AsyncSessionLocal() as session:
         inst = Installation(
@@ -118,7 +118,7 @@ async def test_webhook_installation_revoked():
 
         repo = Repository(
             installation_id=inst.id,
-            full_name="org-under-test/repo-1",
+            full_name=f"org-under-test/repo-{inst_id}",
             default_branch="main",
         )
         session.add(repo)

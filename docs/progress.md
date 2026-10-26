@@ -6,7 +6,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 
 - [x] Phase 0: Scaffold & Environment
 - [x] Phase 1: Auth, GitHub App & Webhook Intake
-- [ ] Phase 2: Diff Fetch & Pre-filtering
+- [x] Phase 2: Diff Fetch & Pre-filtering
 - [ ] Phase 3: Static Analysis
 - [ ] Phase 4: RAG: History Ingestion & Retrieval
 - [ ] Phase 5: Agents & Orchestration
@@ -34,3 +34,12 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Implemented lifecycle event handling: `pull_request` (opened, synchronize, closed) and `installation` (created, deleted, suspend, unsuspend).
 - Implemented stale-run cancellation: synchronize cancels superseded runs; installation deletion marks status `revoked` and cancels all pending/running runs.
 - All 13 tests in test suite passing.
+
+## Phase 2 Notes
+- Implemented unified diff parser with exact line-map position calculation corresponding to GitHub's position index specification (1-based from @@ header).
+- Handled multi-hunk diffs, additions, deletions, context lines, CRLF normalizations.
+- Implemented robust file filtering: binary files, lockfiles, vendored/generated files, user-defined globs, size thresholds, deleted-only files.
+- Implemented language detection for Python and JavaScript/TypeScript.
+- Implemented PR skip rules (draft PRs, bot authors, closed PRs).
+- Implemented risk-prioritized file budgeting (`apply_size_budget`) giving precedence to security-sensitive modules and new files, recording partial state when capped.
+- All 24 tests in test suite passing.
