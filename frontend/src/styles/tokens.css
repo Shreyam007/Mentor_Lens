@@ -1,0 +1,73 @@
+:root {
+  /* MentorLens Design Tokens — Light Theme (Default) */
+  --color-paper: #F4EFE6;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EAE3D3;
+  --color-ink: #111111;
+  --color-muted: #4A4740;
+  --color-cobalt: #2F4BFF;
+  --color-tangerine: #FF6B2C;
+  --color-mint: #2DD4A0;
+  --color-sun: #FFC53D;
+  --color-tomato: #E5383B;
+  --color-sky: #5BC0EB;
+
+  --border-width: 2px;
+  --shadow-offset: 4px 4px 0 #111111;
+  --focus-ring: 0 0 0 3px #FF6B2C;
+}
+
+.dark {
+  /* MentorLens Design Tokens — Dark Theme */
+  --color-paper: #141414;
+  --color-surface: #1E1E1E;
+  --color-surface-2: #2A2A2A;
+  --color-ink: #F4EFE6;
+  --color-muted: #A39E93;
+  --color-cobalt: #6F86FF;
+  --color-tangerine: #FF8A55;
+  --color-mint: #3DE0AE;
+  --color-sun: #FFD166;
+  --color-tomato: #FF5A5D;
+  --color-sky: #7CD0F2;
+
+  --shadow-offset: 4px 4px 0 #F4EFE6;
+  --focus-ring: 0 0 0 3px #FF8A55;
+}
+
+/* Dotted graph paper texture on the page background only */
+.bg-graph-paper {
+  background-color: var(--color-paper);
+  background-image: radial-gradient(var(--color-ink) 0.75px, transparent 0.75px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+  opacity: 1;
+}
+
+/* Glassmorphic floating top navigation bar */
+.nav-glass {
+  background: rgba(244, 239, 230, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .nav-glass {
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Neo-brutalist button interactive states */
+.btn-brutal {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.btn-brutal:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-ink);
+}
+
+.btn-brutal:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--color-ink);
+}
