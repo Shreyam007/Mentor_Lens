@@ -8,7 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from app.api.auth import router as auth_router
 from app.api.health import router as health_router
+from app.github.webhook import router as webhook_router
 from app.core.config import settings
 from app.core.errors import AppError
 from app.core.logging import setup_logging
@@ -31,9 +33,13 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
         return response
 
 
+from app.db.init_db import init_db
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info(f"Starting {settings.PROJECT_NAME} v{settings.VERSION} [{settings.ENVIRONMENT}]")
+    await init_db()
     yield
     logger.info(f"Shutting down {settings.PROJECT_NAME}")
 
@@ -100,3 +106,5 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
 
 # Include Routers
 app.include_router(health_router)
+app.include_router(webhook_router)
+app.include_router(auth_router)

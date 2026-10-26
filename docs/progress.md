@@ -5,7 +5,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 ## Status Summary
 
 - [x] Phase 0: Scaffold & Environment
-- [ ] Phase 1: Auth, GitHub App & Webhook Intake
+- [x] Phase 1: Auth, GitHub App & Webhook Intake
 - [ ] Phase 2: Diff Fetch & Pre-filtering
 - [ ] Phase 3: Static Analysis
 - [ ] Phase 4: RAG: History Ingestion & Retrieval
@@ -25,3 +25,12 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Implemented FastAPI app with structured JSON logging, X-Request-ID propagation, custom AppError hierarchy, `/health`, and `/ready` endpoints.
 - Configured Vite + React 18 + TypeScript frontend with Tailwind CSS and the Neo-Brutalist design tokens from `MentorLens_Stitch_Prompts.md`.
 - Verified backend test suite (6/6 passing) and frontend build (`tsc && vite build` passing).
+
+## Phase 1 Notes
+- Implemented GitHub OAuth login with secure HttpOnly session cookies (`ml_session`) and CSRF tokens (`ml_csrf`).
+- Implemented GitHub App JWT generation and cached installation access token refresh management.
+- Implemented `POST /webhooks/github` intake with constant-time HMAC-SHA256 signature verification before JSON parsing, returning 401 on failure.
+- Implemented idempotency using `X-GitHub-Delivery` recorded in `webhook_deliveries`. Duplicate deliveries return 200 immediately without duplicate job enqueueing.
+- Implemented lifecycle event handling: `pull_request` (opened, synchronize, closed) and `installation` (created, deleted, suspend, unsuspend).
+- Implemented stale-run cancellation: synchronize cancels superseded runs; installation deletion marks status `revoked` and cancels all pending/running runs.
+- All 13 tests in test suite passing.
