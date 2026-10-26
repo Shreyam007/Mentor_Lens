@@ -9,7 +9,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - [x] Phase 2: Diff Fetch & Pre-filtering
 - [x] Phase 3: Static Analysis
 - [x] Phase 4: RAG: History Ingestion & Retrieval
-- [ ] Phase 5: Agents & Orchestration
+- [x] Phase 5: Agents & Orchestration
 - [ ] Phase 6: Posting Reviews to GitHub
 - [ ] Phase 7: Backend APIs for the Dashboard
 - [ ] Phase 8: Frontend (screen by screen S01..S16)
@@ -58,3 +58,12 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Implemented repository history ingestion pipeline with S03 multi-stage progress tracking (`fetching_commits` → `extracting_bugfixes` → `chunking_functions` → `embedding` → `ready`).
 - Implemented retriever with similarity thresholding, secret sanitization, and cold-start fallback ("no_history").
 - All 36 tests in test suite passing.
+
+## Phase 5 Notes
+- Implemented multi-agent pipeline: Retriever, Explainer, and Verifier in `backend/app/agents/graph.py` with state and execution trace persistence into `review_runs.trace_json`.
+- Implemented developer skill calibration in `backend/app/services/skill.py` (Beginner / Intermediate / Advanced) dynamically tuning the pedagogical depth of the Explainer.
+- Implemented prompt injection defenses with strict `<UNTRUSTED_PR_CONTENT>` delimiters and system directives prohibiting instruction execution inside user code.
+- Implemented strict 4-rule Verifier (`backend/app/agents/verifier.py`): fact-checks existence of cited SHAs, diff similarity (>= 0.40), claim alignment, and line presence in PR diff.
+- Enforced citation stripping on hallucinated/unverified SHAs while retaining pedagogical guidance.
+- Handled out-of-diff line errors by routing to PR summary level.
+- All 42 tests in test suite passing.

@@ -132,3 +132,19 @@ def parse_unified_diff(patch: str, filename: str = "") -> ParsedFileDiff:
             continue
 
     return parsed
+
+
+def extract_new_code_from_patch(patch: str) -> str:
+    """
+    Extracts the clean target file content (added + context lines) from a diff patch
+    stripping git markers (+, -, @@) so static analysis tools can parse valid AST.
+    """
+    code_lines: List[str] = []
+    for line in patch.replace("\r\n", "\n").split("\n"):
+        if line.startswith("+"):
+            code_lines.append(line[1:])
+        elif line.startswith(" "):
+            code_lines.append(line[1:])
+        elif not line.startswith("-") and not line.startswith("@"):
+            code_lines.append(line)
+    return "\n".join(code_lines)
