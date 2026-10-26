@@ -11,7 +11,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - [x] Phase 4: RAG: History Ingestion & Retrieval
 - [x] Phase 5: Agents & Orchestration
 - [x] Phase 6: Posting Reviews to GitHub
-- [ ] Phase 7: Backend APIs for the Dashboard
+- [x] Phase 7: Backend APIs for the Dashboard
 - [ ] Phase 8: Frontend (screen by screen S01..S16)
 - [ ] Phase 9: Edge-Case Hardening Matrix
 - [ ] Phase 10: Quality, Evaluation & Observability
@@ -75,3 +75,19 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Implemented optional PR checks gate via GitHub Checks API (`off`, `advisory`, `blocking-on-critical`).
 - Verified via mocked GitHub API test suite using `respx` (initial post, update-on-synchronize, 422 fallback).
 - All 45 tests in test suite passing.
+
+## Phase 7 Notes
+- Implemented complete suite of dashboard REST and SSE APIs:
+  - `GET /api/repos`, `POST /api/repos/{id}/index`, `GET /api/repos/{id}/index/status`
+  - `GET /api/prs`, `GET /api/prs/{id}`
+  - `POST /api/runs/{id}/rerun`, `GET /api/runs/{id}/trace`
+  - `POST /api/findings/{id}/feedback`, `POST /api/findings/{id}/dismiss`, `POST /api/findings/{id}/mark-fixed`
+  - `GET /api/memory/search`, `POST /api/memory/{sha}/exclude`, `POST /api/memory/resync`
+  - `GET /api/developers/{id}/progress`
+  - `GET /api/analytics/team`, `GET /api/analytics/eval`
+  - `GET/PUT /api/settings/rules`, `GET /api/settings/integrations`, `DELETE /api/settings/data`
+  - `POST /api/demo/reset`, `POST /api/demo/create-pr`, `GET /api/demo/replay`
+  - `GET /api/events` (Server-Sent Events)
+- Validated role-based access control (developer vs lead vs admin) with strict 403 Forbidden enforcement on mutating settings.
+- Enforced pagination bounds (`page >= 1`, `1 <= limit <= 100`) returning 422 on invalid ranges.
+- All 48 tests in test suite passing.

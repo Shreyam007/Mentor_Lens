@@ -8,8 +8,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from app.api.analytics import router as analytics_router
 from app.api.auth import router as auth_router
+from app.api.demo import router as demo_router
+from app.api.developers import router as developers_router
+from app.api.events import router as events_router
+from app.api.findings import router as findings_router
 from app.api.health import router as health_router
+from app.api.memory import router as memory_router
+from app.api.prs import router as prs_router
+from app.api.repos import router as repos_router
+from app.api.runs import router as runs_router
+from app.api.settings import router as settings_router
 from app.github.webhook import router as webhook_router
 from app.core.config import settings
 from app.core.errors import AppError
@@ -108,3 +118,13 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
 app.include_router(health_router)
 app.include_router(webhook_router)
 app.include_router(auth_router)
+app.include_router(repos_router)
+app.include_router(prs_router)
+app.include_router(runs_router)
+app.include_router(findings_router)
+app.include_router(memory_router)
+app.include_router(developers_router)
+app.include_router(analytics_router)
+app.include_router(settings_router)
+app.include_router(demo_router)
+app.include_router(events_router)
