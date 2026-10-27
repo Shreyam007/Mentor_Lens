@@ -12,7 +12,7 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - [x] Phase 5: Agents & Orchestration
 - [x] Phase 6: Posting Reviews to GitHub
 - [x] Phase 7: Backend APIs for the Dashboard
-- [ ] Phase 8: Frontend (screen by screen S01..S16)
+- [x] Phase 8: Frontend (screen by screen S01..S16)
 - [ ] Phase 9: Edge-Case Hardening Matrix
 - [ ] Phase 10: Quality, Evaluation & Observability
 - [ ] Phase 11: Demo Repo & Deployment
@@ -91,3 +91,24 @@ Tracks progress phase-by-phase according to `ANTIGRAVITY.md`.
 - Validated role-based access control (developer vs lead vs admin) with strict 403 Forbidden enforcement on mutating settings.
 - Enforced pagination bounds (`page >= 1`, `1 <= limit <= 100`) returning 422 on invalid ranges.
 - All 48 tests in test suite passing.
+
+## Phase 8 Notes
+- Built complete, responsive React 18 + TypeScript + Vite frontend implementing all 16 Stitch design screens (S01–S16) following Clean Neo-Brutalist design tokens:
+  - **S01 Sign In (`/login`):** Centered 400px card, GitHub login button, loading/error/expired session states. Commit: `feat(ui): S01 sign in`
+  - **S02 Onboarding: repos (`/onboarding/repos`):** 3-step wizard, searchable repo list, disabled archived rows, permission banner. Commit: `feat(ui): S02 onboarding repos`
+  - **S03 Indexing progress (`/onboarding/index`):** Step 3, SSE stage progress, percentage bar, cold start warning. Commit: `feat(ui): S03 indexing progress`
+  - **S04 Team dashboard (`/`):** 4 stat cards, "Repeated mistakes per week" line chart with table toggle, recurring mistake list, recent reviews table. Commit: `feat(ui): S04 team dashboard`
+  - **S05 PR queue (`/prs`):** Filters in URL query, status pills (draft, bot, fork, partial, failed), page size selector. Commit: `feat(ui): S05 pr queue`
+  - **S06 PR review detail (`/prs/:id` - HERO SCREEN):** Unified diff viewer + inline `CommentCard`s + sticky summary side panel (severity breakdown, skill chip, pipeline mini-timeline). Commit: `feat(ui): S06 pr review detail`
+  - **S07 Run trace (`/runs/:id`):** 6 horizontal pipeline nodes, JSON inspector drawer, Verifier decisions table. Commit: `feat(ui): S07 run trace`
+  - **S08 Memory explorer (`/memory`):** Search input, cards with before/after mini-diff, exclude toggle with confirmation. Commit: `feat(ui): S08 memory explorer`
+  - **S09 Developer progress (`/developers/:login`):** Skill popover, clean streak, category chart, learning path, milestones. Commit: `feat(ui): S09 developer progress`
+  - **S10 Team analytics (`/analytics`):** Mistake heatmap, anonymize mode, human vs AI time-to-feedback bar chart, senior agreement gauge. Commit: `feat(ui): S10 team analytics`
+  - **S11 Evaluation (`/evaluation`):** 4 metrics, hallucination guard funnel (0 unverified citations posted), sample set table. Commit: `feat(ui): S11 evaluation`
+  - **S12 Settings: rules & gate (`/settings/rules`):** Dirty-state tracking, draft/bot toggles, ignore patterns, gate mode selector. Commit: `feat(ui): S12 settings rules`
+  - **S13 Settings: integrations (`/settings/integrations`):** Webhook delivery table, redeliver button, LLM key tester, cost cap progress bar. Commit: `feat(ui): S13 settings integrations`
+  - **S14 System states (global):** 404, 403, 500 (with request ID), offline banner, rate-limit timer, session expired modal. Commit: `feat(ui): S14 system states`
+  - **S15 Demo mode (`/demo`):** Reset demo, create demo PR, live event feed, offline replay button. Commit: `feat(ui): S15 demo mode`
+  - **S16 Mobile views:** Responsive 375px checks, bottom navigation bar, horizontally scrollable diff container without window scroll. Commit: `feat(ui): S16 mobile views`
+- All screens compile cleanly with zero TypeScript errors under `tsc && vite build`.
+
