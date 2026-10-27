@@ -4,6 +4,7 @@ import LoginPage from './pages/Login';
 import OnboardingReposPage from './pages/OnboardingRepos';
 import OnboardingIndexPage from './pages/OnboardingIndex';
 import DashboardPage from './pages/Dashboard';
+import PRQueuePage from './pages/PRQueue';
 import { 
   Eye, 
   GitPullRequest, 
@@ -128,7 +129,7 @@ export default function App() {
           <Route path="/onboarding/repos" element={<OnboardingReposPage />} />
           <Route path="/onboarding/index" element={<OnboardingIndexPage />} />
           <Route path="/" element={<DashboardPage />} />
-          <Route path="/prs" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Queue (S05)</div>} />
+          <Route path="/prs" element={<PRQueuePage />} />
           <Route path="/prs/:id" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Review Detail (S06)</div>} />
           <Route path="/memory" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Memory Explorer (S08)</div>} />
           <Route path="/developers/:login" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Developer Progress (S09)</div>} />
