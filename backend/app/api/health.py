@@ -81,3 +81,11 @@ async def readiness_check(response: Response) -> Dict[str, Any]:
         "checks": checks,
         "details": details if details else None,
     }
+
+
+@router.get("/metrics")
+async def prometheus_metrics() -> Response:
+    """Prometheus metrics endpoint for observability."""
+    from app.core.metrics import metrics
+    return Response(content=metrics.to_prometheus_format(), media_type="text/plain")
+

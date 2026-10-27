@@ -133,10 +133,31 @@ async def delete_all_repository_data(
     if confirm_text != "DELETE ALL DATA":
         raise HTTPException(status_code=400, detail="Confirmation phrase does not match.")
 
-    # 1. Clear database
+    from app.db.models import AuditLog, FeedbackModel, FindingModel, MistakeEvent, ReviewRun
+
+    # Fetch all repositories to clean up vector store chunks
+    repos_stmt = select(Repository)
+    repos = (await db.execute(repos_stmt)).scalars().all()
+    for repo in repos:
+        memory_store.delete_repo_data(repo.id)
+
+    # 1. Clear database cascading tables
+    await db.execute(delete(FeedbackModel))
+    await db.execute(delete(FindingModel))
+    await db.execute(delete(MistakeEvent))
+    await db.execute(delete(ReviewRun))
     await db.execute(delete(PullRequest))
     await db.execute(delete(CommitIndex))
     await db.execute(delete(Repository))
+
+    # 2. Record audit log entry
+    audit = AuditLog(
+        actor=user.login,
+        action="delete_all_data",
+        target="all_repositories",
+    )
+    db.add(audit)
     await db.commit()
 
-    return {"status": "data_deleted", "message": "All repository data was permanently cleared."}
+    return {"status": "data_deleted", "message": "All repository data was permanently cleared and vector stores wiped."}
+
