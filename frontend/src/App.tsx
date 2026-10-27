@@ -133,7 +133,7 @@ export default function App() {
       )}
 
       {/* Main Content Area */}
-      <main className={`flex-1 w-full ${isLoginPage ? 'p-0' : 'max-w-7xl mx-auto p-4 sm:p-6 lg:p-8'}`}>
+      <main className={`flex-1 w-full ${isLoginPage ? 'p-0' : 'max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 pb-20 lg:pb-8'}`}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/onboarding/repos" element={<OnboardingReposPage />} />
@@ -155,6 +155,38 @@ export default function App() {
           <Route path="*" element={<SystemStatesPage />} />
         </Routes>
       </main>
+
+      {/* S16 Mobile Bottom Tab Bar (max 5 items, touch targets >= 44px) */}
+      {!isLoginPage && (
+        <nav
+          aria-label="Mobile Navigation"
+          className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-paper/95 backdrop-blur-md border-t-3 border-ink px-2 py-1 shadow-brutal-lg flex items-center justify-around safe-bottom"
+        >
+          {[
+            { label: 'Home', path: '/', icon: BarChart3 },
+            { label: 'PRs', path: '/prs', icon: GitPullRequest },
+            { label: 'Memory', path: '/memory', icon: Database },
+            { label: 'Progress', path: '/developers/meera', icon: TrendingUp },
+            { label: 'Settings', path: '/settings/rules', icon: Settings },
+          ].map((item) => {
+            const active = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
+            return (
+              <Link
+                key={item.label}
+                to={item.path}
+                className={`min-h-[44px] min-w-[56px] flex flex-col items-center justify-center rounded-lg transition-colors p-1 ${
+                  active
+                    ? 'text-cobalt font-bold'
+                    : 'text-muted hover:text-ink'
+                }`}
+              >
+                <item.icon className="w-5 h-5 stroke-[2.2]" />
+                <span className="text-[10px] font-mono mt-0.5">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      )}
     </div>
   );
 }
