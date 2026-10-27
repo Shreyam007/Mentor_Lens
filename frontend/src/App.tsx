@@ -3,6 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import OnboardingReposPage from './pages/OnboardingRepos';
 import OnboardingIndexPage from './pages/OnboardingIndex';
+import DashboardPage from './pages/Dashboard';
 import { 
   Eye, 
   GitPullRequest, 
@@ -126,7 +127,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/onboarding/repos" element={<OnboardingReposPage />} />
           <Route path="/onboarding/index" element={<OnboardingIndexPage />} />
-          <Route path="/" element={<HomePlaceholder />} />
+          <Route path="/" element={<DashboardPage />} />
           <Route path="/prs" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Queue (S05)</div>} />
           <Route path="/prs/:id" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Review Detail (S06)</div>} />
           <Route path="/memory" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Memory Explorer (S08)</div>} />
@@ -137,32 +138,6 @@ export default function App() {
           <Route path="/demo" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Demo Mode (S15)</div>} />
         </Routes>
       </main>
-    </div>
-  );
-}
-
-function HomePlaceholder() {
-  return (
-    <div className="space-y-6">
-      <div className="bg-surface p-6 rounded-xl border-3 border-ink shadow-brutal">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <span className="inline-block px-3 py-1 bg-mint/20 text-ink border-2 border-ink rounded-md font-mono text-xs font-bold mb-2">
-              SYSTEM INITIALIZED
-            </span>
-            <h1 className="text-3xl font-extrabold tracking-tight">Code Review That Teaches</h1>
-            <p className="text-muted mt-1 text-base">
-              Context-aware institutional memory on pull requests with verifiable commit citations.
-            </p>
-          </div>
-          <Link
-            to="/demo"
-            className="btn-brutal inline-flex items-center gap-2 px-5 py-2.5 bg-cobalt text-white border-3 border-ink rounded-lg font-bold shadow-brutal"
-          >
-            Open Demo Mode (S15)
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }
