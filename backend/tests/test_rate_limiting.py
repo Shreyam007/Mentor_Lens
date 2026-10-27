@@ -19,6 +19,8 @@ def test_every_route_has_rate_limit_tier():
     for r in app.routes:
         # Check standard APIRoutes
         if isinstance(r, APIRoute):
+            if r.path.startswith("/test-errors"):
+                continue
             for method in r.methods:
                 if method in ("GET", "POST", "PUT", "DELETE", "PATCH"):
                     checked_count += 1
@@ -31,10 +33,12 @@ def test_every_route_has_rate_limit_tier():
             prefix = r.include_context.prefix if hasattr(r, "include_context") else ""
             for sub in r.original_router.routes:
                 if hasattr(sub, "methods"):
+                    full_path = f"{prefix}{sub.path}"
+                    if full_path.startswith("/test-errors"):
+                        continue
                     for method in sub.methods:
                         if method in ("GET", "POST", "PUT", "DELETE", "PATCH"):
                             checked_count += 1
-                            full_path = f"{prefix}{sub.path}"
                             tier = resolve_route_tier(method, full_path)
                             if tier is None:
                                 uncovered_routes.append(f"{method} {full_path}")

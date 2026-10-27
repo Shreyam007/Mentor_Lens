@@ -8,6 +8,8 @@ SECRET_PATTERNS = [
     # Anthropic / OpenAI API Keys
     (re.compile(r"\b(sk-ant-[A-Za-z0-9_-]{30,100})\b"), "[REDACTED_ANTHROPIC_KEY]"),
     (re.compile(r"\b(sk-[A-Za-z0-9]{32,64})\b"), "[REDACTED_OPENAI_KEY]"),
+    # Stripe API Keys
+    (re.compile(r"\b(sk_(?:live|test)_[0-9a-zA-Z]{24,100})\b"), "[REDACTED_STRIPE_KEY]"),
     # Generic Private Key blocks
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----"), "[REDACTED_PRIVATE_KEY]"),
     # Slack Tokens

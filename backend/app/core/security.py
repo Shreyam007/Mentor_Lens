@@ -48,3 +48,18 @@ def decode_session_token(token: str) -> Dict[str, Any]:
 def generate_csrf_token() -> str:
     """Generates a secure cryptographically random CSRF token."""
     return secrets.token_hex(32)
+
+
+def sanitize_xss(text: str) -> str:
+    """
+    Sanitizes untrusted input (such as PR titles, comments, and commit messages)
+    to neutralize malicious scripts and HTML injection.
+    """
+    if not text:
+        return ""
+    import html
+    import re
+    cleaned = re.sub(r"(?i)<script[^>]*>.*?</script>", "", text, flags=re.DOTALL)
+    cleaned = re.sub(r"(?i)javascript:", "blocked:", cleaned)
+    return html.escape(cleaned, quote=True)
+

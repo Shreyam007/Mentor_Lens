@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 
 EXEMPT_PREFIXES = (
     "/webhooks/",
+    "/api/auth/",
     "/health",
     "/ready",
     "/metrics",
@@ -44,8 +45,8 @@ class CSRFMiddleware(BaseHTTPMiddleware):
         session_cookie = request.cookies.get("ml_session")
         csrf_cookie = request.cookies.get("ml_csrf")
 
-        # If user has an active session, CSRF token is mandatory
-        if session_cookie or csrf_cookie:
+        # If CSRF cookie is present (browser session), CSRF token header is mandatory
+        if csrf_cookie:
             csrf_header = request.headers.get("X-CSRF-Token")
             if not csrf_header or not csrf_cookie or not hmac.compare_digest(csrf_header, csrf_cookie):
                 request_id = getattr(request.state, "request_id", "")
