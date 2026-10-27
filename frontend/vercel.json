@@ -3,23 +3,23 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://mentorlens-api.onrender.com/api/:path*"
+      "destination": "https://mentor-lens.onrender.com/api/:path*"
     },
     {
       "source": "/webhooks/:path*",
-      "destination": "https://mentorlens-api.onrender.com/webhooks/:path*"
+      "destination": "https://mentor-lens.onrender.com/webhooks/:path*"
     },
     {
       "source": "/health",
-      "destination": "https://mentorlens-api.onrender.com/health"
+      "destination": "https://mentor-lens.onrender.com/health"
     },
     {
       "source": "/ready",
-      "destination": "https://mentorlens-api.onrender.com/ready"
+      "destination": "https://mentor-lens.onrender.com/ready"
     },
     {
       "source": "/metrics",
-      "destination": "https://mentorlens-api.onrender.com/metrics"
+      "destination": "https://mentor-lens.onrender.com/metrics"
     },
     {
       "source": "/(.*)",
