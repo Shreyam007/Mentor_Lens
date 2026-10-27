@@ -14,6 +14,7 @@ import EvaluationPage from './pages/Evaluation';
 import SettingsRulesPage from './pages/SettingsRules';
 import SettingsIntegrationsPage from './pages/SettingsIntegrations';
 import SystemStatesPage from './pages/SystemStates';
+import DemoModePage from './pages/DemoMode';
 import { 
   Eye, 
   GitPullRequest, 
@@ -150,7 +151,7 @@ export default function App() {
           <Route path="/settings/integrations" element={<SettingsIntegrationsPage />} />
           <Route path="/settings/*" element={<SettingsRulesPage />} />
           <Route path="/system-states" element={<SystemStatesPage />} />
-          <Route path="/demo" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Demo Mode (S15)</div>} />
+          <Route path="/demo" element={<DemoModePage />} />
           <Route path="*" element={<SystemStatesPage />} />
         </Routes>
       </main>
