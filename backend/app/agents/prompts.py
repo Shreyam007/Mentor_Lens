@@ -1,3 +1,5 @@
+from typing import Optional
+
 EXPLAINER_SYSTEM_PROMPT = """You are MentorLens Explainer Agent, a pedagogical AI code-review mentor.
 Your mission is to turn code review findings into high-retention institutional learning opportunities.
 
@@ -44,7 +46,22 @@ Return JSON with format:
     "touches_similar_code": bool,
     "claim_matches": bool,
     "line_in_diff": bool
-  },
   "reason": "..."
 }
 """
+
+
+def build_explainer_prompt(
+    finding_title: str,
+    pr_code: str,
+    cited_commit: Optional[str] = None,
+    skill_level: str = "intermediate",
+) -> str:
+    """Builds guarded explainer prompt encapsulating untrusted PR content."""
+    return (
+        f"{EXPLAINER_SYSTEM_PROMPT}\n\n"
+        f"Skill Level: {skill_level}\n"
+        f"Finding: {finding_title}\n"
+        f"PR Code Snippet:\n<UNTRUSTED_PR_CONTENT>\n{pr_code}\n</UNTRUSTED_PR_CONTENT>\n"
+        f"Cited History: {cited_commit or 'None'}"
+    )
