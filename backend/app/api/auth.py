@@ -103,6 +103,7 @@ async def github_callback(
         httponly=True,
         secure=settings.COOKIE_SECURE,
         samesite=settings.COOKIE_SAMESITE,
+        domain=settings.COOKIE_DOMAIN,
         max_age=7 * 24 * 3600,
     )
     # CSRF cookie (readable by JS to include in mutating headers)
@@ -112,6 +113,7 @@ async def github_callback(
         httponly=False,
         secure=settings.COOKIE_SECURE,
         samesite=settings.COOKIE_SAMESITE,
+        domain=settings.COOKIE_DOMAIN,
         max_age=7 * 24 * 3600,
     )
 
@@ -142,6 +144,6 @@ async def get_current_user_profile(user: User = Depends(get_current_user)) -> Di
 @router.post("/logout")
 async def logout(response: Response) -> Dict[str, str]:
     """Clears the authentication and CSRF session cookies."""
-    response.delete_cookie("ml_session")
-    response.delete_cookie("ml_csrf")
+    response.delete_cookie("ml_session", domain=settings.COOKIE_DOMAIN)
+    response.delete_cookie("ml_csrf", domain=settings.COOKIE_DOMAIN)
     return {"status": "logged_out"}

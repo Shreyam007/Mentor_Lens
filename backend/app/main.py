@@ -58,7 +58,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com; "
             "img-src 'self' data: https:; "
-            "connect-src 'self' ws: wss:;"
+            "connect-src 'self' https://*.onrender.com https://*.vercel.app ws: wss:;"
         )
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         return response
@@ -87,6 +87,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origin_regex=r"^https://.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

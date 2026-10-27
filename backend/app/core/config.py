@@ -23,6 +23,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:8000",
+        "https://mentorlens.vercel.app",
     ]
 
     # Database
@@ -51,6 +52,7 @@ class Settings(BaseSettings):
     # Cookie & Security
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
+    COOKIE_DOMAIN: Optional[str] = None
     ENFORCE_REDIS_RATE_LIMIT: bool = False
 
 

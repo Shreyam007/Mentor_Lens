@@ -1,0 +1,114 @@
+services:
+  # 1. FastAPI Web Service
+  - type: web
+    name: mentorlens-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    healthCheckPath: /ready
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: ENVIRONMENT
+        value: production
+      - key: PROJECT_NAME
+        value: MentorLens
+      - key: VERSION
+        value: 1.0.0
+      - key: LOG_LEVEL
+        value: INFO
+      - key: BACKEND_URL
+        value: https://mentorlens-api.onrender.com
+      - key: FRONTEND_URL
+        value: https://mentorlens.vercel.app
+      - key: ALLOWED_ORIGINS
+        value: '["https://mentorlens.vercel.app", "https://*.vercel.app"]'
+      - key: ENFORCE_REDIS_RATE_LIMIT
+        value: "true"
+      - key: CHROMA_PERSIST_DIRECTORY
+        value: /data/chroma
+      - key: MONTHLY_LLM_COST_CAP_USD
+        value: "100.00"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mentorlens-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: mentorlens-redis
+          property: connectionString
+      # Secrets (must be populated in Render Dashboard - never committed)
+      - key: SECRET_KEY
+        sync: false
+      - key: GITHUB_APP_ID
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_WEBHOOK_SECRET
+        sync: false
+      - key: GITHUB_PRIVATE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+    disk:
+      name: chroma-data
+      mountPath: /data/chroma
+      sizeGB: 1
+
+  # 2. Background Queue Worker
+  - type: worker
+    name: mentorlens-worker
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: python -m app.workers.worker
+    plan: starter
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PROJECT_NAME
+        value: MentorLens
+      - key: VERSION
+        value: 1.0.0
+      - key: LOG_LEVEL
+        value: INFO
+      - key: CHROMA_PERSIST_DIRECTORY
+        value: /data/chroma
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mentorlens-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: mentorlens-redis
+          property: connectionString
+      # Secrets (sync: false)
+      - key: SECRET_KEY
+        sync: false
+      - key: GITHUB_APP_ID
+        sync: false
+      - key: GITHUB_PRIVATE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+    disk:
+      name: chroma-worker-data
+      mountPath: /data/chroma
+      sizeGB: 1
+
+databases:
+  - name: mentorlens-db
+    databaseName: mentorlens
+    user: mentorlens
+    plan: free
+    ipAllowList: []
+
+keyValues:
+  - name: mentorlens-redis
+    plan: free
+    ipAllowList: []
