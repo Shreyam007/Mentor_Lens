@@ -8,6 +8,7 @@ import PRQueuePage from './pages/PRQueue';
 import PRReviewDetailPage from './pages/PRReviewDetail';
 import RunTracePage from './pages/RunTrace';
 import MemoryExplorerPage from './pages/MemoryExplorer';
+import DeveloperProgressPage from './pages/DeveloperProgress';
 import { 
   Eye, 
   GitPullRequest, 
@@ -136,7 +137,7 @@ export default function App() {
           <Route path="/prs/:id" element={<PRReviewDetailPage />} />
           <Route path="/runs/:id" element={<RunTracePage />} />
           <Route path="/memory" element={<MemoryExplorerPage />} />
-          <Route path="/developers/:login" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Developer Progress (S09)</div>} />
+          <Route path="/developers/:login" element={<DeveloperProgressPage />} />
           <Route path="/analytics" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Team Analytics (S10)</div>} />
           <Route path="/evaluation" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Evaluation (S11)</div>} />
           <Route path="/settings/*" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Settings (S12/S13)</div>} />
