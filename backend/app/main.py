@@ -92,9 +92,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Request ID & Security Headers
+from app.core.rate_limit import TieredRateLimitMiddleware
+
+# Request ID, Security Headers & Tiered Rate Limiting
+app.add_middleware(TieredRateLimitMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestIDMiddleware)
+
 
 
 

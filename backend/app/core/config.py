@@ -48,9 +48,11 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     MONTHLY_COST_CAP_USD: float = 50.0
 
-    # Cookie
+    # Cookie & Security
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "lax"
+    ENFORCE_REDIS_RATE_LIMIT: bool = False
+
 
 
 settings = Settings()
