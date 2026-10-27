@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import LoginPage from './pages/Login';
 import { 
   Eye, 
   GitPullRequest, 
@@ -33,10 +34,13 @@ export default function App() {
     { label: 'Analytics', path: '/analytics', icon: BarChart3 },
   ];
 
+  const isLoginPage = location.pathname === '/login';
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Floating Glass Top Bar */}
-      <header className="sticky top-3 z-50 px-4 flex justify-center">
+      {!isLoginPage && (
+        <header className="sticky top-3 z-50 px-4 flex justify-center">
         <nav 
           aria-label="Main Navigation"
           className="w-full max-w-7xl mx-auto nav-glass rounded-xl border-2 border-ink shadow-brutal px-4 py-2.5 flex items-center justify-between"
@@ -112,10 +116,12 @@ export default function App() {
           </div>
         </nav>
       </header>
+      )}
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+      <main className={`flex-1 w-full ${isLoginPage ? 'p-0' : 'max-w-7xl mx-auto p-4 sm:p-6 lg:p-8'}`}>
         <Routes>
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<HomePlaceholder />} />
           <Route path="/prs" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Queue (S05)</div>} />
           <Route path="/prs/:id" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Review Detail (S06)</div>} />
