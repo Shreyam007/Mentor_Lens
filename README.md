@@ -10,6 +10,11 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5+-3178C6.svg)](https://www.typescriptlang.org)
 [![Aesthetics: Neo--Brutalist](https://img.shields.io/badge/Design-Clean_Neo--Brutalist-FF6B4A.svg)](#design-system)
 
+## Live Deployments
+- **Production Web App:** [https://mentorlens-nine.vercel.app](https://mentorlens-nine.vercel.app)
+- **Production API:** [https://mentor-lens.onrender.com](https://mentor-lens.onrender.com)
+  > *Note: Render free instances spin down after inactivity; initial cold-start takes ~45–60s.*
+
 ---
 
 ## What is MentorLens?

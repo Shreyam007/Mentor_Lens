@@ -10,8 +10,11 @@
 ## 1. Architecture Overview
 
 MentorLens is architected for zero-downtime, independent horizontal scaling:
-- **Frontend:** Static SPA built with React 18, TypeScript, and Vite. Deployed to Vercel with custom Neo-Brutalist routing and asset caching.
-- **Backend API:** FastAPI (ASGI) running on Python 3.11+ / Uvicorn. Deployed on Railway or Render with automated health checks (`/health`, `/ready`).
+- **Frontend:** Static SPA built with React 18, TypeScript, and Vite. Deployed to Vercel with custom Neo-Brutalist routing, reverse proxy rewrites, and asset caching.
+  - **Live URL:** `https://mentorlens-nine.vercel.app`
+  - **Deployment ID:** `dpl_4yyhzKHrQk5MT8VG3gNGtLD5oP7a`
+- **Backend API:** FastAPI (ASGI) running on Python 3.11+ / Uvicorn. Deployed on Render with automated health checks (`/health`, `/ready`).
+  - **Live API Endpoint:** `https://mentor-lens.onrender.com`
 - **Data Tier:**
   - **Relational:** PostgreSQL (or persistent SQLite for single-node deployments).
   - **Cache & Rate Limiting:** Redis 7+ for distributed tiered rate limits and fair worker queueing.
@@ -29,13 +32,11 @@ MentorLens is architected for zero-downtime, independent horizontal scaling:
 2. Navigate to `frontend/`:
    ```bash
    cd frontend
-   vercel link
+   vercel link --project mentorlens --yes
    ```
-3. Configure environment variable in Vercel Project Settings:
-   - `VITE_API_URL`: URL of the deployed backend API (e.g. `https://api.mentorlens.dev`).
-4. Trigger production build & deployment:
+3. Trigger production build & deployment:
    ```bash
-   vercel --prod
+   vercel --prod --yes
    ```
 
 ### Output Configuration
