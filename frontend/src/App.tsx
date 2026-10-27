@@ -12,6 +12,7 @@ import DeveloperProgressPage from './pages/DeveloperProgress';
 import TeamAnalyticsPage from './pages/TeamAnalytics';
 import EvaluationPage from './pages/Evaluation';
 import SettingsRulesPage from './pages/SettingsRules';
+import SettingsIntegrationsPage from './pages/SettingsIntegrations';
 import { 
   Eye, 
   GitPullRequest, 
@@ -145,6 +146,7 @@ export default function App() {
           <Route path="/evaluation" element={<EvaluationPage />} />
           <Route path="/settings" element={<SettingsRulesPage />} />
           <Route path="/settings/rules" element={<SettingsRulesPage />} />
+          <Route path="/settings/integrations" element={<SettingsIntegrationsPage />} />
           <Route path="/settings/*" element={<SettingsRulesPage />} />
           <Route path="/demo" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">Demo Mode (S15)</div>} />
         </Routes>
