@@ -58,3 +58,7 @@ postgres_data/
 Thumbs.db
 .vscode/
 .idea/
+
+# Generated Demo Repo
+demo-repo/mentorlens-demo/
+

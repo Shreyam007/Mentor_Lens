@@ -54,13 +54,16 @@ async def test_prometheus_metrics_endpoint():
 @pytest.mark.asyncio
 async def test_cascading_delete_and_audit_log():
     """Validates cascading delete wipes repositories, vector index, and records audit event."""
+    import uuid
     await init_db()
+    unique_gid = int(uuid.uuid4().int % 10000000)
+    admin_login = f"admin_{uuid.uuid4().hex[:6]}"
     async with AsyncSessionLocal() as session:
         # Create an admin user
-        admin = User(login="superadmin", role="admin", github_id=999999)
+        admin = User(login=admin_login, role="admin", github_id=unique_gid)
         session.add(admin)
         await session.commit()
-        admin_login = admin.login
+
 
     # Call delete data with correct confirmation phrase
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
