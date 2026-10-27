@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import LoginPage from './pages/Login';
+import OnboardingReposPage from './pages/OnboardingRepos';
 import { 
   Eye, 
   GitPullRequest, 
@@ -122,6 +123,7 @@ export default function App() {
       <main className={`flex-1 w-full ${isLoginPage ? 'p-0' : 'max-w-7xl mx-auto p-4 sm:p-6 lg:p-8'}`}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/onboarding/repos" element={<OnboardingReposPage />} />
           <Route path="/" element={<HomePlaceholder />} />
           <Route path="/prs" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Queue (S05)</div>} />
           <Route path="/prs/:id" element={<div className="p-4 bg-surface border-2 border-ink shadow-brutal rounded-lg">PR Review Detail (S06)</div>} />
