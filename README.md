@@ -43,8 +43,8 @@ MentorLens implements the exact **Clean Neo-Brutalist** aesthetic specified in t
 
 ### 1. Clone & Set Up Environment
 ```bash
-git clone https://github.com/org/mentorlens.git
-cd mentorlens
+git clone https://github.com/Shreyam007/Mentor_Lens.git
+cd Mentor_Lens
 
 # Copy environment variables
 cp .env.example .env
@@ -135,13 +135,13 @@ Evaluated against the multi-lingual benchmark suite via `backend/app/services/ev
 
 ## Test Suite Execution
 
-Run the complete backend test suite (82+ automated tests covering edge-case hardening matrix, multi-agent pipeline, RAG, static analysis, and security headers):
+Run the complete backend test suite (106 automated tests covering the 40-case edge-case hardening matrix, multi-agent pipeline, RAG, static analysis, tiered rate limiting, CSRF, and security headers):
 
 ```bash
-# Run all tests
+# Run all 106 tests
 .\.venv\Scripts\pytest.exe backend/tests -v
 
-# Run 30-case edge hardening matrix specifically
+# Run 40-case edge hardening matrix specifically
 .\.venv\Scripts\pytest.exe backend/tests/edge_cases/test_matrix.py -v
 ```
 
