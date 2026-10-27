@@ -92,12 +92,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.core.csrf import CSRFMiddleware
 from app.core.rate_limit import TieredRateLimitMiddleware
 
-# Request ID, Security Headers & Tiered Rate Limiting
+# Request ID, Security Headers, CSRF & Tiered Rate Limiting
+app.add_middleware(CSRFMiddleware)
 app.add_middleware(TieredRateLimitMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RequestIDMiddleware)
+
 
 
 
