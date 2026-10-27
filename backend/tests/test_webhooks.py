@@ -261,3 +261,41 @@ async def test_webhook_synchronize_cancels_previous_run():
         assert r1.error_code == "SUPERSEDED_BY_SYNCHRONIZE"
         assert r2.status == "queued"
         assert r2.head_sha == "sha_v2"
+
+
+@pytest.mark.asyncio
+async def test_valid_signed_webhooks_never_rejected_with_429():
+    """Verify webhook rule: valid signed webhooks are never rejected with 429 even under high volume."""
+    await init_db()
+    payload = {
+        "action": "opened",
+        "repository": {"full_name": "org/unlimited-repo", "default_branch": "main", "owner": {"login": "org"}},
+        "pull_request": {
+            "number": 1,
+            "title": "High volume webhook",
+            "user": {"login": "dev", "type": "User"},
+            "head": {"sha": "sha_batch", "repo": {"fork": False}},
+            "base": {"ref": "main"},
+            "draft": False,
+        },
+        "installation": {"id": 9999},
+    }
+    b_payload = json.dumps(payload).encode("utf-8")
+    sig = compute_signature(b_payload, settings.GITHUB_WEBHOOK_SECRET)
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        # Send consecutive deliveries with valid signatures
+        for i in range(15):
+            res = await client.post(
+                "/webhooks/github",
+                content=b_payload,
+                headers={
+                    "X-GitHub-Delivery": str(uuid.uuid4()),
+                    "X-GitHub-Event": "pull_request",
+                    "X-Hub-Signature-256": sig,
+                    "Content-Type": "application/json",
+                },
+            )
+            assert res.status_code == 200, f"Delivery {i} failed with status {res.status_code}"
+            assert res.status_code != 429
+

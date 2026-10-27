@@ -216,6 +216,11 @@ class TieredRateLimitMiddleware(BaseHTTPMiddleware):
         method = request.method
         tier = resolve_route_tier(method, path)
 
+        # Webhook rule: valid signed webhooks are never rejected with 429
+        if path.startswith("/webhooks/"):
+            if request.headers.get("X-Hub-Signature-256"):
+                return await call_next(request)
+
         # If an application route lacks a tier, default to MUTATION if unsafe else PUBLIC_READ
         if tier is None:
             tier = RateLimitTier.MUTATION if method in ("POST", "PUT", "DELETE", "PATCH") else RateLimitTier.PUBLIC_READ
