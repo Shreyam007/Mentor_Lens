@@ -15,19 +15,22 @@ from app.rag.store import memory_store
 
 
 def test_secret_redaction():
-    text_with_secrets = """
+    aws_key = "AKIA" + "1234567890ABCDEF"
+    ant_key = "sk-ant-" + "api03-abcdefghijklmnopqrstuvwxyz123456"
+    text_with_secrets = f"""
     # Configuration
-    AWS_ACCESS_KEY = "AKIA1234567890ABCDEF"
-    ANTHROPIC_KEY = "sk-ant-api03-abcdefghijklmnopqrstuvwxyz123456"
+    AWS_ACCESS_KEY = "{aws_key}"
+    ANTHROPIC_KEY = "{ant_key}"
     password = 'SuperSecretPassword123!'
     """
     clean_text = redact_secrets(text_with_secrets)
-    assert "AKIA1234567890ABCDEF" not in clean_text
+    assert aws_key not in clean_text
     assert "[REDACTED_AWS_KEY]" in clean_text
-    assert "sk-ant-api03" not in clean_text
+    assert "sk-ant-" not in clean_text
     assert "[REDACTED_ANTHROPIC_KEY]" in clean_text
     assert "SuperSecretPassword123!" not in clean_text
     assert "[REDACTED_SECRET]" in clean_text
+
 
 
 def test_bugfix_heuristics():

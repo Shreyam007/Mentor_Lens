@@ -1,0 +1,10 @@
+[allowlist]
+description = "Global allowlist for ignored paths and virtual environments"
+paths = [
+  '''(?i)\.venv/''',
+  '''(?i)node_modules/''',
+  '''(?i)frontend/dist/''',
+  '''(?i)\.pytest_cache/''',
+  '''(?i)__pycache__/''',
+  '''(?i)\.git/'''
+]

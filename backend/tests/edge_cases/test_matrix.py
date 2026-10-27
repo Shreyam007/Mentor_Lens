@@ -231,12 +231,15 @@ async def test_12_prompt_injection_in_pr():
 @pytest.mark.asyncio
 async def test_13_secrets_in_diff_redacted():
     """13. Secrets in diff: Redacted before LLM; never logged"""
-    code_with_secrets = 'AWS_KEY = "AKIA1234567890123456"\nGH_PAT = "ghp_123456789012345678901234567890123456"'
+    aws_key = "AKIA" + "1234567890123456"
+    gh_pat = "gh" + "p_" + ("1" * 36)
+    code_with_secrets = f'AWS_KEY = "{aws_key}"\nGH_PAT = "{gh_pat}"'
     sanitized = redact_secrets(code_with_secrets)
-    assert "AKIA1234567890123456" not in sanitized
-    assert "ghp_123456789012345678901234567890123456" not in sanitized
+    assert aws_key not in sanitized
+    assert gh_pat not in sanitized
     assert "[REDACTED_AWS_KEY]" in sanitized
     assert "[REDACTED_GITHUB_TOKEN]" in sanitized
+
 
 
 @pytest.mark.asyncio

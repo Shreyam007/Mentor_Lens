@@ -1,0 +1,15 @@
+# Gitleaks ignore file for MentorLens
+# The following 6 fingerprints correspond to synthetic test fixtures and UI mock data
+# committed in earlier phases to test secret redaction capabilities.
+
+# Synthetic AWS key fixture in unit test test_secret_redaction (commit c188b0b)
+c188b0b908ebfc1a23507cc7ef1751fe4e7defa3:backend/tests/test_rag.py:generic-api-key:20
+
+# Synthetic Stripe token in UI mock diff display for S08 Memory Explorer (commit 9fb5dfb)
+9fb5dfb42485f3c5e7ea323a38945f950a43ed8d:frontend/src/pages/MemoryExplorer.tsx:stripe-access-token:112
+9fb5dfb42485f3c5e7ea323a38945f950a43ed8d:frontend/src/pages/MemoryExplorer.tsx:stripe-access-token:115
+
+# Synthetic AWS key and GitHub PAT test fixtures in test_matrix.py edge case #13 (commit d3df657)
+d3df657d811374dfb11fb800d847655ac441c0af:backend/tests/edge_cases/test_matrix.py:generic-api-key:234
+d3df657d811374dfb11fb800d847655ac441c0af:backend/tests/edge_cases/test_matrix.py:github-pat:234
+d3df657d811374dfb11fb800d847655ac441c0af:backend/tests/edge_cases/test_matrix.py:github-pat:237

@@ -109,11 +109,12 @@ const SAMPLE_MEMORY: MemoryCardItem[] = [
     file: 'campus_portal/config/payment.py',
     functionName: 'get_stripe_key',
     timesCited: 2,
-    beforeSnippet: `STRIPE_KEY = "sk_live_98124018240"`,
+    beforeSnippet: `STRIPE_KEY = "dummy_unconfigured_key"`,
     afterSnippet: `STRIPE_KEY = os.environ["STRIPE_API_KEY"]`,
     fullDiff: `@@ -5,2 +5,2 @@
--STRIPE_KEY = "sk_live_98124018240"
+-STRIPE_KEY = "dummy_unconfigured_key"
 +STRIPE_KEY = os.environ["STRIPE_API_KEY"]`,
+
     linkedPRs: [],
     isExcluded: false,
     isStale: true,
