@@ -26,8 +26,10 @@ import {
   Sun, 
   Moon, 
   Search,
-  ChevronDown
+  ChevronDown,
+  LogOut
 } from 'lucide-react';
+import { logoutUser } from './lib/api';
 
 export default function App() {
   const [isDark, setIsDark] = useState(false);
@@ -128,6 +130,21 @@ export default function App() {
             <div className="w-8 h-8 rounded-md bg-tangerine border-2 border-ink shadow-brutal-sm font-mono text-xs font-bold text-white flex items-center justify-center">
               MS
             </div>
+
+            {/* Logout Button */}
+            <button
+              onClick={async () => {
+                try {
+                  await logoutUser();
+                } catch {}
+                window.location.href = '/login';
+              }}
+              aria-label="Sign Out"
+              title="Sign Out"
+              className="w-8 h-8 flex items-center justify-center rounded-md bg-surface hover:bg-red-50 text-stone-700 hover:text-red-600 border-2 border-ink shadow-brutal-sm hover:translate-y-[-1px] transition-transform"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </nav>
       </header>

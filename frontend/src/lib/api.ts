@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 export interface Repository {
   id: string;
@@ -130,6 +130,16 @@ export interface EvaluationMetrics {
   }>;
 }
 
+export interface UserProfile {
+  id: string;
+  login: string;
+  email?: string | null;
+  role: 'developer' | 'lead' | 'admin';
+  avatar_url?: string | null;
+  is_email_verified?: boolean;
+  created_at?: string;
+}
+
 function getCsrfToken(): string | null {
   if (typeof document === 'undefined') return null;
   const match = document.cookie.match(/(?:^|;\s*)ml_csrf=([^;]+)/);
@@ -140,6 +150,39 @@ export interface RateLimitDetail {
   retryAfter: number;
   tier?: string;
   message: string;
+}
+
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+
+async function attemptSilentRefresh(): Promise<boolean> {
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
+  }
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const csrf = getCsrfToken();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (csrf) headers['X-CSRF-Token'] = csrf;
+
+      const res = await fetch(`${API_BASE}/api/auth/refresh`, {
+        method: 'POST',
+        credentials: 'include',
+        headers,
+      });
+
+      return res.ok;
+    } catch {
+      return false;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
 }
 
 export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -165,6 +208,7 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
       headers,
     });
 
+    // Handle 429 Rate Limit
     if (res.status === 429) {
       const retryAfterHeader = res.headers.get('Retry-After');
       const errorBody = await res.json().catch(() => ({}));
@@ -183,6 +227,31 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
       throw new Error(`[429 RATE_LIMIT_EXCEEDED] ${message}`);
     }
 
+    // Handle 401 Session Expired -> Single Silent Refresh Attempt
+    if (res.status === 401 && !endpoint.startsWith('/api/auth/login') && !endpoint.startsWith('/api/auth/signup') && endpoint !== '/api/auth/refresh') {
+      const refreshed = await attemptSilentRefresh();
+      if (refreshed) {
+        // Re-read fresh CSRF token if cookie was updated
+        const freshCsrf = getCsrfToken();
+        if (freshCsrf && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+          headers['X-CSRF-Token'] = freshCsrf;
+        }
+        // Replay original request
+        const retryRes = await fetch(url, {
+          ...options,
+          credentials: 'include',
+          headers,
+        });
+        if (retryRes.ok) {
+          return retryRes.json();
+        }
+      }
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('mentorlens:session-expired'));
+      }
+    }
+
     if (!res.ok) {
       const errorBody = await res.json().catch(() => ({}));
       const message = errorBody?.error?.message || `HTTP error ${res.status}`;
@@ -195,3 +264,28 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
   }
 }
 
+// --- Authentication Helper Functions ---
+
+export async function loginWithEmail(email: string, password: string):Promise<{ status: string; user: UserProfile; csrf_token: string }> {
+  return fetchApi('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function signupWithEmail(email: string, password: string, login?: string): Promise<{ status: string; user: UserProfile; csrf_token: string }> {
+  return fetchApi('/api/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify({ email, password, login }),
+  });
+}
+
+export async function logoutUser(): Promise<{ status: string }> {
+  return fetchApi('/api/auth/logout', {
+    method: 'POST',
+  });
+}
+
+export async function getCurrentUser(): Promise<UserProfile> {
+  return fetchApi('/api/auth/me');
+}
