@@ -142,12 +142,106 @@ Evaluated against the multi-lingual benchmark suite via `backend/app/services/ev
 
 Run the complete backend test suite (106 automated tests covering the 40-case edge-case hardening matrix, multi-agent pipeline, RAG, static analysis, tiered rate limiting, CSRF, and security headers):
 
+---
+
+## Screenshots & Visual Walkthrough
+
+All screenshots captured from the live deployment ([https://mentorlens-nine.vercel.app](https://mentorlens-nine.vercel.app)):
+
+### S01 Sign In & Authentication (Tabs, Inline Validation, Lockout Protection)
+![MentorLens Sign In Screen](docs/screens/login.png)
+
+### S04 Team Dashboard & PR Queue (Velocity Stats, Learning Trends)
+![MentorLens Dashboard Screen](docs/screens/dashboard.png)
+
+### S06 PR Review Detail & Socratic Explanations (Diff, Pedagogical Comments, Citations)
+![MentorLens PR Review Detail](docs/screens/review_detail.png)
+
+### S09 Developer Progress & Learning Trajectory (Mistake Reduction)
+![MentorLens Developer Progress](docs/screens/developer_progress.png)
+
+### S16 Responsive Mobile View (375px Viewport)
+<p align="center">
+  <img src="docs/screens/mobile_view.png" alt="MentorLens Mobile View" width="375" />
+</p>
+
+---
+
+## Authentication & Security Architecture
+
+MentorLens features enterprise-grade authentication conforming to OWASP Top 10 guidelines:
+
+1. **Password Hashing (Argon2id):**
+   - High-memory, time-cost Argon2id hashing via `argon2-cffi`.
+   - Minimum password length 10 characters, rejects top common passwords, email format validation and lowercase normalization.
+   - Generic error messages on invalid credentials to prevent user enumeration attacks.
+   - Constant-time verification prevents side-channel timing attacks.
+
+2. **Session & Cookie Security:**
+   - **Access Token:** Short-lived JWT (15 minutes) stored in `HttpOnly`, `Secure`, `SameSite=Lax` cookies.
+   - **Refresh Token:** Long-lived cryptographically random token (7 days) stored in `HttpOnly`, `Secure`, `SameSite=Lax` cookies.
+   - **Single-Use Rotation & Reuse Detection:** Every refresh issues a new token family member and revokes the old token. If a previously-used refresh token is presented, all active sessions for that user are immediately revoked (theft detection).
+   - **Double-Submit Anti-CSRF:** Access endpoints validate an anti-CSRF token against request cookies/headers on mutating routes.
+
+3. **Account & IP Lockout Protection:**
+   - Tracks failed authentication attempts per account email and per client IP.
+   - 5 consecutive failures triggers an automatic 15-minute lockout with `429 Too Many Requests` and an active countdown timer.
+
+4. **OAuth 2.0 & OIDC with PKCE:**
+   - GitHub OAuth and Google OIDC authentication with RFC 7636 PKCE (`code_challenge` / `code_verifier`).
+   - Server-side cryptographically signed `state` parameters protect against login CSRF.
+   - Verified email linking prevents account hijacking.
+   - Safe redirect validation restricts post-login redirects strictly to internal paths or pre-approved application hosts.
+
+---
+
+## Deploy-Proof Backend Architecture
+
+- **Dynamic Port Binding:** Container CMD utilizes dynamic shell expansion `uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}` ensuring compatibility with Render's dynamically assigned `$PORT`.
+- **Database URL Normalization:** Automatically converts Render PostgreSQL schemes (`postgres://` and `postgresql://`) to `postgresql+asyncpg://` for async SQLAlchemy and `postgresql://` for sync Alembic migrations.
+- **Fail-Fast Production Validation:** In `ENVIRONMENT=production`, validates all required secrets (`SECRET_KEY`, `JWT_SECRET`, `DATABASE_URL`, `REDIS_URL`) and fails fast on startup with a single clear diagnostic error message.
+- **Probe Semantics:**
+  - `GET /health` — Pure liveness probe, returns `200 OK` instantly without dependency checks for Render zero-downtime rolling deploys.
+  - `GET /ready` — Readiness probe, checks database connection pool and Redis cache connectivity, returning `503 Service Unavailable` if dependencies are unavailable.
+- **Resilient Startup & Lazy Backoff:** If Redis or external dependencies are momentarily unreachable during boot, the application does not crash. Connections lazily retry with exponential backoff (up to 30s) while preserving read availability.
+
+---
+
+## Environment Variables Reference
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `ENVIRONMENT` | Yes | `development` | Deployment environment (`development` or `production`) |
+| `SECRET_KEY` | Yes | - | Secret key used for cryptographic signing (minimum 32 bytes) |
+| `JWT_SECRET` | Yes | - | Secret key used for JWT access and refresh token signing |
+| `DATABASE_URL` | Yes | `sqlite+aiosqlite:///./mentorlens.db` | PostgreSQL connection string (`postgresql+asyncpg://...`) |
+| `REDIS_URL` | Yes | `redis://localhost:6379/0` | Redis connection string (`rediss://...` for TLS) |
+| `GITHUB_CLIENT_ID` | Optional | - | GitHub OAuth App Client ID |
+| `GITHUB_CLIENT_SECRET` | Optional | - | GitHub OAuth App Client Secret |
+| `GOOGLE_CLIENT_ID` | Optional | - | Google Cloud OAuth 2.0 Client ID |
+| `GOOGLE_CLIENT_SECRET` | Optional | - | Google Cloud OAuth 2.0 Client Secret |
+| `FRONTEND_URL` | Optional | `https://mentorlens-nine.vercel.app` | Canonical frontend URL for OAuth callbacks |
+| `BACKEND_URL` | Optional | `https://mentor-lens.onrender.com` | Canonical backend URL |
+| `ALLOWED_ORIGINS` | Optional | `["https://mentorlens-nine.vercel.app"]` | CORS allowed origins |
+
+---
+
+## Test Suite Execution
+
+Run the complete backend test suite (**112 automated tests** covering the 40-case edge-case hardening matrix, multi-agent pipeline, RAG, static analysis, tiered rate limiting, CSRF, security headers, and full authentication):
+
 ```bash
-# Run all 106 tests
+# Run all 112 tests
 .\.venv\Scripts\pytest.exe backend/tests -v
 
 # Run 40-case edge hardening matrix specifically
 .\.venv\Scripts\pytest.exe backend/tests/edge_cases/test_matrix.py -v
+
+# Run authentication and session rotation test suite
+.\.venv\Scripts\pytest.exe backend/tests/test_auth_full.py -v
+
+# Run pre-deploy smoke test verification
+.\.venv\Scripts\python.exe scripts/smoke.py
 ```
 
 ---
@@ -163,3 +257,4 @@ Run the complete backend test suite (106 automated tests covering the 40-case ed
 ## License
 
 MIT © 2026 MentorLens Contributors.
+
