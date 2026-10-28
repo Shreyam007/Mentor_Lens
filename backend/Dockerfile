@@ -43,5 +43,5 @@ USER appuser
 
 EXPOSE 8000
 
-# Runs database initialization on startup followed by uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Runs uvicorn with dynamic $PORT expansion for Render compatibility (defaulting to 8000)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

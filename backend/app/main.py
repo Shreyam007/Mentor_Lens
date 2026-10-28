@@ -70,7 +70,21 @@ from app.db.init_db import init_db
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info(f"Starting {settings.PROJECT_NAME} v{settings.VERSION} [{settings.ENVIRONMENT}]")
-    await init_db()
+    try:
+        settings.validate_production_environment()
+    except RuntimeError as e:
+        logger.error(str(e))
+        raise SystemExit(1)
+
+    # In local/development environments with SQLite, ensure tables are created
+    if not settings.is_production:
+        try:
+            await init_db()
+        except Exception as e:
+            logger.warning(f"Database initial setup notice: {e}")
+    else:
+        logger.info("Production mode: Database schema managed via Alembic migrations.")
+
     yield
     logger.info(f"Shutting down {settings.PROJECT_NAME}")
 

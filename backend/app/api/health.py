@@ -44,15 +44,21 @@ async def readiness_check(response: Response) -> Dict[str, Any]:
         logger.warning(f"Database readiness check failed: {e}")
 
     # 2. Redis check
+    r = None
     try:
-        r = aioredis.from_url(settings.REDIS_URL, socket_connect_timeout=1)
+        r = aioredis.from_url(settings.REDIS_URL, socket_connect_timeout=1.5, socket_timeout=1.5)
         pong = await r.ping()
-        await r.aclose()
         if pong:
             checks["redis"] = True
     except Exception as e:
         details["redis"] = str(e)
         logger.warning(f"Redis readiness check failed: {e}")
+    finally:
+        if r is not None:
+            try:
+                await r.aclose()
+            except Exception:
+                pass
 
     # 3. Chroma check
     if settings.CHROMA_HOST:
