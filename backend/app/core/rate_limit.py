@@ -40,9 +40,15 @@ ROUTE_TIER_MAPPING: List[Tuple[str, str, RateLimitTier]] = [
     ("POST", "/webhooks/github", RateLimitTier.WEBHOOK),
 
     # Auth
+    ("POST", "/api/auth/signup", RateLimitTier.AUTH),
+    ("POST", "/api/auth/login", RateLimitTier.AUTH),
+    ("POST", "/api/auth/refresh", RateLimitTier.AUTH),
     ("GET", "/api/auth/github", RateLimitTier.AUTH),
     ("GET", "/api/auth/github/callback", RateLimitTier.AUTH),
+    ("GET", "/api/auth/google", RateLimitTier.AUTH),
+    ("GET", "/api/auth/google/callback", RateLimitTier.AUTH),
     ("POST", "/api/auth/logout", RateLimitTier.AUTH),
+    ("POST", "/api/auth/logout-all", RateLimitTier.AUTH),
     ("GET", "/api/auth/me", RateLimitTier.PUBLIC_READ),
 
     # Repositories
@@ -107,17 +113,32 @@ def resolve_route_tier(method: str, path: str) -> Optional[RateLimitTier]:
 # Storage
 _memory_rate_limit_store: Dict[str, list] = {}
 _redis_client: Optional[Redis] = None
+_last_redis_attempt: float = 0.0
+_redis_backoff: float = 1.0
 
 
 async def get_redis_client() -> Optional[Redis]:
-    global _redis_client
-    if _redis_client is None:
-        try:
-            _redis_client = from_url(settings.REDIS_URL, socket_connect_timeout=1, socket_timeout=1)
-        except Exception as e:
-            logger.warning(f"Unable to initialize Redis connection: {e}")
-            _redis_client = None
-    return _redis_client
+    global _redis_client, _last_redis_attempt, _redis_backoff
+    now = time.time()
+    if _redis_client is not None:
+        return _redis_client
+
+    # Exponential backoff up to 30 seconds
+    if now - _last_redis_attempt < _redis_backoff:
+        return None
+
+    _last_redis_attempt = now
+    try:
+        client = from_url(settings.REDIS_URL, socket_connect_timeout=1.5, socket_timeout=1.5)
+        await client.ping()
+        _redis_client = client
+        _redis_backoff = 1.0
+        return _redis_client
+    except Exception as e:
+        logger.warning(f"Unable to connect to Redis at {settings.REDIS_URL}: {e}")
+        _redis_client = None
+        _redis_backoff = min(_redis_backoff * 2, 30.0)
+        return None
 
 
 def get_client_identifier(request: Request) -> str:
